@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "mylead-cli"
+version = "0.1.0"
+description = "CLI for MyLead API"
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "mylead_cli"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+typer = {extras = ["all"], version = "^0.9.0"}
+httpx = "^0.24.1"
+pandas = "^2.1.0"
+asyncio = "^3.4.3"
+pydantic = "^2.3.0"
+aiolimiter = "^1.1.0"
+tenacity = "^8.2.3"
+orjson = "^3.9.7"
+python-dotenv = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
