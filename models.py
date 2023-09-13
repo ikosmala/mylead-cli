@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, ConfigDict
 from datetime import date, timedelta, datetime
 from typing import Literal
 
@@ -9,6 +9,14 @@ class Api(BaseModel):
     date_to: date = Field(default_factory=lambda: date.today())
     date_from: date = Field(default_factory=lambda: date.today() - timedelta(days=365))
     status: Literal["approved", "pending", "rejected", "pre_approved"] | None = None
+
+    @validator("date_to", pre=True)
+    def strip_date_to(cls, value):
+        return value.date()
+
+    @validator("date_from", pre=True)
+    def strip_date_from(cls, value):
+        return value.date()
 
 
 class UserAgent(BaseModel):
@@ -29,6 +37,8 @@ class CreatedAt(BaseModel):
 
 
 class Lead(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     id: str
     campaign_id: int = Field(gt=0)
     campaign_name: str
