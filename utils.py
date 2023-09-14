@@ -2,7 +2,7 @@ import models
 from typing import Any
 from pydantic import ValidationError
 import orjson
-from datetime import date, timedelta, datetime
+from datetime import timedelta, datetime
 import logging
 import pandas as pd
 

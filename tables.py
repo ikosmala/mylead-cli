@@ -4,12 +4,9 @@ from rich.padding import Padding
 from rich import box
 import pandas as pd
 from rich.prompt import Prompt
+from rich.panel import Panel
 
-# device type  user_agent.device
-# country
-# operation system user_agent.operation_system
 # ml_subs
-# hour_of_leads
 # daily average, best day,
 
 
@@ -88,7 +85,52 @@ def table_from_data(
 
 def choose_table(df: pd.DataFrame) -> None:
     console = Console()
-    console.print("Choose one option")
-    name = Prompt.ask("Enter your name", choices=["1", "2", "3", "4", "5"])
-    print(name)
-    print(type(name))
+    OPTIONS = OPTIONS = {
+        "1": (
+            "Type of device on which leads were created.",
+            "user_agent.device",
+            "Device Type",
+        ),
+        "2": (
+            "Operating system on which leads were created.",
+            "user_agent.operation_system",
+            "Operating System",
+        ),
+        "3": ("Country from which leads were created.", "country", "Country"),
+        "4": ("Statistics by campaign.", "campaign_name", "Campaign Statistics"),
+        "5": ("Statistics by hour of the day.", "hour_of_day", "Hourly Statistics"),
+    }
+
+    console.print(
+        Panel(
+            "\n".join([f"{key}. {value[0]}" for key, value in OPTIONS.items()])
+            + "\n\n[bold]0. Exit[/bold]",
+            title="Available statistics",
+            expand=False,
+            box=box.ROUNDED,
+            border_style="gold1",
+        )
+    )
+    while True:
+        table_choice = Prompt.ask(
+            "Pick a statistic to display or exit the program.",
+            choices=list(OPTIONS.keys()) + ["0"],
+        )
+
+        if table_choice == "0":
+            console.print("Exiting program.")
+            break
+
+        title, group_by_column, column_name = OPTIONS.get(
+            table_choice, (None, None, None)
+        )
+
+        if title:
+            table_from_data(
+                data=df,
+                title=title,
+                group_by_column=group_by_column,
+                column_name=column_name,
+            )
+        else:
+            console.print("Wrong input")

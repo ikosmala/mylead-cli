@@ -42,10 +42,10 @@ This document outlines the steps to create a CLI MyLead API Tool, which includes
   - [x] `API KEY support`
     - [x] Add an option to specify API KEY
   - [x] `Saving data to file`
-  - [x] `Statistics`
+  - [x] `Statistics` for data not available in MyLead Dashboard
     - [x] Implement a `stats` command to show summary statistics
   - [ ] `Max/min, avg lead`
-    - [ ] Implement a `lead-stats` command to show max, min, and average lead
+    - [ ] Implement a `lead-stats` command to show max, min, and average lead -[ ] Sub id statistics
 
 ---
 

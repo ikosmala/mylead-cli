@@ -1,5 +1,3 @@
-from rich import print
-from rich.progress import Progress
 import httpx
 import logging
 import models
@@ -22,7 +20,6 @@ RETRY_ATTEMPTS = 2
 
 
 def retry_if_status_code_is_429(exception: BaseException) -> bool:
-    print(type(exception))
     return (
         isinstance(exception, httpx.HTTPStatusError)
         and exception.response.status_code == 429
@@ -56,7 +53,8 @@ async def fetch_single_page(
         elif e.response.status_code == 429:
             info = e.response.json()
             logging.error(
-                f"Too many API calls in short amount of time. Will try to retry {RETRY_ATTEMPTS} times."
+                "Too many API calls in short amount of time. "
+                + f"Will try to retry {RETRY_ATTEMPTS} times."
             )
             raise
         else:

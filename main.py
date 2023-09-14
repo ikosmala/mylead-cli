@@ -1,17 +1,15 @@
 import pandas as pd
 from rich import print
 import models, ml, utils, tables, ploting
-from time import perf_counter
 import logging
 from dotenv import load_dotenv
 import os
 import typer
 from typing import Any
 from typing_extensions import Annotated
-from datetime import date, timedelta, datetime
+from datetime import datetime
 import asyncio
 from rich.progress import Progress, SpinnerColumn, TextColumn
-import pandas as pd
 import sys
 
 DATEFORMATS = ["%Y-%m-%d", "%Y/%m/%d", "%d-%m-%Y", "%d/%m/%Y", "%Y.%m.%d", "%d.%m.%Y"]
@@ -37,7 +35,7 @@ def stats(
         str,
         typer.Option(
             help="MyLead API Key",
-            prompt="MyLeadAPI key:",
+            prompt="MyLeadAPI key (leave empty if fetching from file)",
             hide_input=True,
         ),
     ],
@@ -63,52 +61,23 @@ def stats(
         TextColumn("[progress.description]{task.description}"),
         transient=True,
     ) as progress:
-        progress.add_task(description="Fetching data from MyLead API...", total=None)
         if apikey == "test":
             load_dotenv()
             apikey = os.getenv("API_KEY")
         if not from_file:
+            progress.add_task(
+                description="Fetching data from MyLead API...", total=None
+            )
             api = models.Api(token=apikey, date_from=date_from, date_to=date_to)
             all_data = asyncio.run(ml.fetch_all_pages_ML(api_data=api))
-            if save_file == True:
+            if save_file is True:
                 utils.data_to_file("myfile.json", all_data)
         else:
+            # todo fetch from specified file
+            progress.add_task(description="Fetching data from file...", total=None)
             all_data = utils.data_from_file("myfile.json")
 
         df = process_data(all_data)
-
-    tables.table_from_data(
-        df,
-        title="Type of device leads were created on.",
-        group_by_column="user_agent.device",
-        column_name="Device type",
-    )
-    tables.table_from_data(
-        df,
-        title="Operating system leads were created on.",
-        group_by_column="user_agent.operation_system",
-        column_name="Operating system",
-    )
-    tables.table_from_data(
-        df,
-        title="Country leads were created from.",
-        group_by_column="country",
-        column_name="Operating system",
-    )
-
-    tables.table_from_data(
-        df,
-        title="Campaigns statistics",
-        group_by_column="campaign_name",
-        column_name="Campaigns statistics",
-    )
-
-    tables.table_from_data(
-        df,
-        title="Hour of day statistics",
-        group_by_column="hour_of_day",
-        column_name="Hour of day",
-    )
 
     tables.choose_table(df)
 
@@ -139,12 +108,12 @@ def plot(
     if not from_file:
         api = models.Api(token=apikey, date_from=date_from, date_to=date_to, limit=500)
         all_data = asyncio.run(ml.fetch_all_pages_ML(api_data=api))
-        if save_file == True:
+        if save_file is True:
             utils.data_to_file("myfile.json", all_data)
     else:
         all_data = utils.data_from_file("myfile.json")
 
-    df = utils.get_dataframe(all_data)
+    df = process_data(all_data)
 
     ploting.create_bar_graph(df, group_by_column="country")
     ploting.create_bar_graph(df, group_by_column="user_agent.operation_system")
