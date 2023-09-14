@@ -6,6 +6,7 @@ import logging
 from dotenv import load_dotenv
 import os
 import typer
+from typing import Any
 from typing_extensions import Annotated
 from datetime import date, timedelta, datetime
 import asyncio
@@ -15,12 +16,12 @@ import sys
 
 DATEFORMATS = ["%Y-%m-%d", "%Y/%m/%d", "%d-%m-%Y", "%d/%m/%Y", "%Y.%m.%d", "%d.%m.%Y"]
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
 
 app = typer.Typer()
 
 
-def process_data(data: list[dict | None]) -> pd.DataFrame:
+def process_data(data: list[dict[str, Any]]) -> pd.DataFrame:
     if not data:
         print("No leads to process. Exiting program")
         sys.exit()
@@ -32,7 +33,14 @@ def process_data(data: list[dict | None]) -> pd.DataFrame:
 
 @app.command()
 def stats(
-    apikey: Annotated[str, typer.Argument(help="MyLead API Key")],
+    apikey: Annotated[
+        str,
+        typer.Option(
+            help="MyLead API Key",
+            prompt="MyLeadAPI key:",
+            hide_input=True,
+        ),
+    ],
     date_from: Annotated[
         datetime,
         typer.Option(
@@ -58,7 +66,7 @@ def stats(
         progress.add_task(description="Fetching data from MyLead API...", total=None)
         if apikey == "test":
             load_dotenv()
-        apikey = os.getenv("API_KEY")  # type: ignore
+            apikey = os.getenv("API_KEY")
         if not from_file:
             api = models.Api(token=apikey, date_from=date_from, date_to=date_to)
             all_data = asyncio.run(ml.fetch_all_pages_ML(api_data=api))

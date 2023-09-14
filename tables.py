@@ -38,7 +38,7 @@ def create_table(
     group_by_column: str,
     sum_of_all_leads: int,
     sum_payouts: float,
-):
+) -> None:
     table = Table(title=title, caption=caption, box=box.ROUNDED, header_style="gold1")
     table.add_column(column_name, justify="left", style="cyan", no_wrap=True)
     table.add_column(
@@ -67,7 +67,7 @@ def table_from_data(
     group_by_column: str,
     column_name: str,
     sort_by: str = "total_payout",
-):
+) -> None:
     start_date = data["created_at.date"].min()
     end_date = data["created_at.date"].max()
     sum_of_all_leads = len(data)
@@ -86,7 +86,7 @@ def table_from_data(
     )
 
 
-def choose_table(df: pd.DataFrame):
+def choose_table(df: pd.DataFrame) -> None:
     console = Console()
     console.print("Choose one option")
     name = Prompt.ask("Enter your name", choices=["1", "2", "3", "4", "5"])

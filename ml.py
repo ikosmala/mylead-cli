@@ -6,6 +6,7 @@ import models
 from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception
 from math import ceil
 import asyncio
+from typing import Any
 
 
 class StatusError(Exception):
@@ -20,7 +21,8 @@ SLEEP_TIME = 61  # seconds
 RETRY_ATTEMPTS = 2
 
 
-def retry_if_status_code_is_429(exception):
+def retry_if_status_code_is_429(exception: BaseException) -> bool:
+    print(type(exception))
     return (
         isinstance(exception, httpx.HTTPStatusError)
         and exception.response.status_code == 429
@@ -34,7 +36,7 @@ def retry_if_status_code_is_429(exception):
 )
 async def fetch_single_page(
     client: httpx.AsyncClient, api_data: models.Api, page: int
-) -> dict:
+) -> dict[str, Any]:
     params = api_data.model_dump(exclude_none=True)
     params["page"] = page
     try:
@@ -54,7 +56,7 @@ async def fetch_single_page(
         elif e.response.status_code == 429:
             info = e.response.json()
             logging.error(
-                f"Too many API calls in short amount of time. Will try to retry {RETRY_ATTEMPTS} times. {e}"
+                f"Too many API calls in short amount of time. Will try to retry {RETRY_ATTEMPTS} times."
             )
             raise
         else:
@@ -67,7 +69,7 @@ async def fetch_single_page(
     return json_data
 
 
-async def fetch_all_pages_ML(api_data: models.Api) -> list:
+async def fetch_all_pages_ML(api_data: models.Api) -> list[dict[str, Any]]:
     all_data = []
 
     async with httpx.AsyncClient() as client:
