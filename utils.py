@@ -33,16 +33,13 @@ def data_from_file(file_name: str) -> list[dict[str, Any]]:
         logging.info(f"Data read from file {file_name}")
     # Deserialize using orjson
     data_from_json = orjson.loads(json_bytes)
-    valid_data = validate_data(data_from_json)
-
-    return valid_data
+    return validate_data(data_from_json)
 
 
 def get_dataframe(data: list[dict[str, Any]]) -> pd.DataFrame:
     validated_data = validate_data(data)
-    df = pd.json_normalize(validated_data)
-    return df
+    return pd.json_normalize(validated_data)
 
 
 def one_year_ago_day() -> str:
-    return str((datetime.today() - timedelta(days=365)).date())
+    return str((datetime.now() - timedelta(days=365)).date())

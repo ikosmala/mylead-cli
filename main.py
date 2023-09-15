@@ -1,16 +1,21 @@
-import pandas as pd
-from rich import print
-import models, ml, utils, tables, ploting
-import logging
-from dotenv import load_dotenv
-import os
-import typer
-from typing import Any
-from typing_extensions import Annotated
-from datetime import datetime
 import asyncio
-from rich.progress import Progress, SpinnerColumn, TextColumn
+import logging
+import os
 import sys
+from datetime import datetime
+from typing import Annotated, Any
+
+import pandas as pd
+import typer
+from dotenv import load_dotenv
+from rich import print
+from rich.progress import Progress, SpinnerColumn, TextColumn
+
+import ml
+import models
+import ploting
+import utils
+from tables import choose_table
 
 DATEFORMATS = ["%Y-%m-%d", "%Y/%m/%d", "%d-%m-%Y", "%d/%m/%Y", "%Y.%m.%d", "%d.%m.%Y"]
 
@@ -79,7 +84,7 @@ def stats(
 
         df = process_data(all_data)
 
-    tables.choose_table(df)
+    choose_table(df)
 
 
 @app.command()

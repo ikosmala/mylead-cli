@@ -1,10 +1,12 @@
-import httpx
-import logging
-import models
-from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception
-from math import ceil
 import asyncio
+import logging
+from math import ceil
 from typing import Any
+
+import httpx
+from tenacity import retry, retry_if_exception, stop_after_attempt, wait_fixed
+
+import models
 
 
 class StatusError(Exception):
@@ -45,22 +47,18 @@ async def fetch_single_page(
         if e.response.status_code in [401, 403]:
             info = e.response.json()
             logging.error(f"Reason: {info['errors']['authorization'][0]}")
-            raise
         elif e.response.status_code == 422:
             info = e.response.json()
             logging.error(f"Wrong parameters of API call.  {info['errors']}")
-            raise
         elif e.response.status_code == 429:
             info = e.response.json()
             logging.error(
                 "Too many API calls in short amount of time. "
-                + f"Will try to retry {RETRY_ATTEMPTS} times."
+                f"Will try to retry {RETRY_ATTEMPTS} times."
             )
-            raise
         else:
             logging.error(f"An unexpected HTTP error occured: {e}")
-            raise
-
+        raise
     json_data = response.json()
     if json_data["status"] != "success":
         raise StatusError(f"Response: {json_data}")
@@ -77,10 +75,10 @@ async def fetch_all_pages_ML(api_data: models.Api) -> list[dict[str, Any]]:
         all_data.extend(initial_data["data"][0]["conversions"])
         total_pages = ceil(total_count / api_data.limit)
 
-        tasks = []
-        for page in range(2, total_pages + 1):
-            tasks.append(fetch_single_page(client, api_data, page))
-
+        tasks = [
+            fetch_single_page(client, api_data, page)
+            for page in range(2, total_pages + 1)
+        ]
         # rate limited batches
         for i in range(0, len(tasks), RATE_LIMIT):
             batch = tasks[i : i + RATE_LIMIT]

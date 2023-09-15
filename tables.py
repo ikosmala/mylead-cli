@@ -1,10 +1,10 @@
-from rich.table import Table
+import pandas as pd
+from rich import box
 from rich.console import Console
 from rich.padding import Padding
-from rich import box
-import pandas as pd
-from rich.prompt import Prompt
 from rich.panel import Panel
+from rich.prompt import Prompt
+from rich.table import Table
 
 # ml_subs
 # daily average, best day,
@@ -15,7 +15,7 @@ def aggregate_data(
 ) -> pd.DataFrame:
     selected_columns = [group_by_column, "payout"]
     df = data[selected_columns]
-    result = (
+    return (
         df.groupby(group_by_column)
         .agg(
             grouped_data=pd.NamedAgg(column=group_by_column, aggfunc="size"),
@@ -24,7 +24,6 @@ def aggregate_data(
         .reset_index()
         .sort_values(sort_by, ascending=False)
     )
-    return result
 
 
 def create_table(
@@ -46,11 +45,13 @@ def create_table(
     )
     data[group_by_column] = data[group_by_column].astype(str)
 
-    for index, row in data.iterrows():
+    for _, row in data.iterrows():
+        grouped_data_percent = row["grouped_data"] / sum_of_all_leads * 100
+        total_payout_percent = row["total_payout"] / sum_payouts * 100
         table.add_row(
             row[group_by_column],
-            f"{row['grouped_data']} ({(row['grouped_data']/ sum_of_all_leads* 100):.2f}%)",
-            f"{row['total_payout']:.2f} ({(row['total_payout']/ sum_payouts* 100):.2f}%)",
+            f"{row['grouped_data']} ({grouped_data_percent:.2f}%)",
+            f"{row['total_payout']:.2f} ({total_payout_percent:.2f}%)",
         )
 
     console = Console()
@@ -114,7 +115,7 @@ def choose_table(df: pd.DataFrame) -> None:
     while True:
         table_choice = Prompt.ask(
             "Pick a statistic to display or exit the program.",
-            choices=list(OPTIONS.keys()) + ["0"],
+            choices=[*list(OPTIONS.keys()), "0"],
         )
 
         if table_choice == "0":
