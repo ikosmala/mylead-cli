@@ -34,6 +34,30 @@ def process_data(data: list[dict[str, Any]]) -> pd.DataFrame:
     return df
 
 
+def fetch_data(
+    progress: Progress,
+    apikey: str,
+    date_from: datetime,
+    date_to: datetime,
+    from_file: bool,
+    save_file: bool,
+) -> list[dict[str, Any]]:
+    if apikey == "test":
+        load_dotenv()
+        apikey = os.getenv("API_KEY")
+    if not from_file:
+        progress.add_task(description="Fetching data from MyLead API...", total=None)
+        api = models.Api(token=apikey, date_from=date_from, date_to=date_to)
+        all_data = asyncio.run(ml.fetch_all_pages_ML(api_data=api))
+        if save_file:
+            utils.data_to_file("myfile.json", all_data)
+    else:
+        # todo fetch from specified file
+        progress.add_task(description="Fetching data from file...", total=None)
+        all_data = utils.data_from_file("myfile.json")
+    return all_data
+
+
 @app.command()
 def stats(
     apikey: Annotated[
@@ -66,29 +90,16 @@ def stats(
         TextColumn("[progress.description]{task.description}"),
         transient=True,
     ) as progress:
-        if apikey == "test":
-            load_dotenv()
-            apikey = os.getenv("API_KEY")
-        if not from_file:
-            progress.add_task(
-                description="Fetching data from MyLead API...", total=None
-            )
-            api = models.Api(token=apikey, date_from=date_from, date_to=date_to)
-            all_data = asyncio.run(ml.fetch_all_pages_ML(api_data=api))
-            if save_file is True:
-                utils.data_to_file("myfile.json", all_data)
-        else:
-            # todo fetch from specified file
-            progress.add_task(description="Fetching data from file...", total=None)
-            all_data = utils.data_from_file("myfile.json")
-
+        all_data = fetch_data(
+            progress, apikey, date_from, date_to, from_file, save_file
+        )
         df = process_data(all_data)
 
     choose_table(df)
 
 
 @app.command()
-def plot(
+def charts(
     apikey: Annotated[str, typer.Argument(help="MyLead API Key")],
     date_from: Annotated[
         datetime,
@@ -107,21 +118,30 @@ def plot(
     save_file: Annotated[bool, typer.Option(help="Save leads to file")] = False,
     from_file: Annotated[bool, typer.Option(help="Load leads from file")] = False,
 ):
-    if apikey == "test":
-        load_dotenv()
-        apikey = os.getenv("API_KEY")  # type: ignore
-    if not from_file:
-        api = models.Api(token=apikey, date_from=date_from, date_to=date_to, limit=500)
-        all_data = asyncio.run(ml.fetch_all_pages_ML(api_data=api))
-        if save_file is True:
-            utils.data_to_file("myfile.json", all_data)
-    else:
-        all_data = utils.data_from_file("myfile.json")
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        transient=True,
+    ) as progress:
+        all_data = fetch_data(
+            progress, apikey, date_from, date_to, from_file, save_file
+        )
+        df = process_data(all_data)
 
-    df = process_data(all_data)
-
-    ploting.create_bar_graph(df, group_by_column="country")
-    ploting.create_bar_graph(df, group_by_column="user_agent.operation_system")
+    ploting.create_bar_graph(
+        df,
+        group_by_column="country",
+        title="Country statistics",
+        x_label="Country",
+        y_label="Leads value",
+    )
+    ploting.create_bar_graph(
+        df,
+        group_by_column="user_agent.operation_system",
+        title="Operating system statistics",
+        x_label="Operating system",
+        y_label="Leads value",
+    )
 
 
 if __name__ == "__main__":

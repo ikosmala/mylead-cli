@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document outlines the steps to create a CLI MyLead API Tool, which includes fetching data from an API, storing it in a Pandas DataFrame, providing a CLI interface using Typer, and visualizing the data using Seaborn.
+This document outlines the steps to create a CLI MyLead API Tool, which includes fetching data from an API, storing it in a Pandas DataFrame, providing a CLI interface using Typer, and visualizing the data using Plotly.
 
 ---
 
@@ -53,7 +53,7 @@ This document outlines the steps to create a CLI MyLead API Tool, which includes
 
 ### Tasks
 
-- [x] Install and import Seaborn
+- [x] Install and import Plotly
 - [ ] Create visualizations based on DataFrame
   - [ ] Line graphs for time-based data
   - [ ] Bar graphs for categorical data
