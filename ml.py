@@ -68,7 +68,7 @@ async def fetch_single_page(
 async def fetch_all_pages_ML(api_data: models.Api) -> list[dict[str, Any]]:
     all_data = []
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(http2=True) as client:
         # Fetch the first page to get total_pages
         initial_data = await fetch_single_page(client, api_data, 1)
         total_count = initial_data["pagination"]["total_count"]
