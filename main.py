@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import os
 import sys
 from datetime import datetime
 from typing import Annotated, Any
@@ -19,9 +18,19 @@ from tables import choose_table
 
 DATEFORMATS = ["%Y-%m-%d", "%Y/%m/%d", "%d-%m-%Y", "%d/%m/%Y", "%Y.%m.%d", "%d.%m.%Y"]
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 app = typer.Typer()
+load_dotenv()
+
+
+def check_api_key(apikey: str):
+    if not apikey:
+        print(
+            "Missing API Key: Ensure you supply an API Key "
+            "either via a console argument or an environment variable"
+        )
+        sys.exit()
 
 
 def process_data(data: list[dict[str, Any]]) -> pd.DataFrame:
@@ -30,7 +39,6 @@ def process_data(data: list[dict[str, Any]]) -> pd.DataFrame:
         sys.exit()
     df = utils.get_dataframe(data)
     df["hour_of_day"] = df["created_at.date"].dt.hour.astype(int)
-
     return df
 
 
@@ -42,9 +50,6 @@ def fetch_data(
     from_file: bool,
     save_file: bool,
 ) -> list[dict[str, Any]]:
-    if apikey == "test":
-        load_dotenv()
-        apikey = os.getenv("API_KEY")
     if not from_file:
         progress.add_task(description="Fetching data from MyLead API...", total=None)
         api = models.Api(token=apikey, date_from=date_from, date_to=date_to)
@@ -55,19 +60,13 @@ def fetch_data(
         # todo fetch from specified file
         progress.add_task(description="Fetching data from file...", total=None)
         all_data = utils.data_from_file("myfile.json")
+
+    print(f"Fetched {len(all_data)} leads")
     return all_data
 
 
 @app.command()
 def stats(
-    apikey: Annotated[
-        str,
-        typer.Option(
-            help="MyLead API Key",
-            prompt="MyLeadAPI key (leave empty if fetching from file)",
-            hide_input=True,
-        ),
-    ],
     date_from: Annotated[
         datetime,
         typer.Option(
@@ -76,6 +75,7 @@ def stats(
             default_factory=utils.one_year_ago_day,
         ),
     ],
+    apikey: Annotated[str, typer.Argument(envvar="API_KEY")] = "",
     date_to: Annotated[
         datetime,
         typer.Option(
@@ -85,6 +85,7 @@ def stats(
     save_file: Annotated[bool, typer.Option(help="Save leads to file")] = False,
     from_file: Annotated[bool, typer.Option(help="Load leads from file")] = False,
 ):
+    check_api_key(apikey)
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),
@@ -100,7 +101,6 @@ def stats(
 
 @app.command()
 def charts(
-    apikey: Annotated[str, typer.Argument(help="MyLead API Key")],
     date_from: Annotated[
         datetime,
         typer.Option(
@@ -109,6 +109,7 @@ def charts(
             default_factory=utils.one_year_ago_day,
         ),
     ],
+    apikey: Annotated[str, typer.Argument(envvar="API_KEY")] = "",
     date_to: Annotated[
         datetime,
         typer.Option(
@@ -118,6 +119,7 @@ def charts(
     save_file: Annotated[bool, typer.Option(help="Save leads to file")] = False,
     from_file: Annotated[bool, typer.Option(help="Load leads from file")] = False,
 ):
+    check_api_key(apikey)
     with Progress(
         SpinnerColumn(),
         TextColumn("[progress.description]{task.description}"),

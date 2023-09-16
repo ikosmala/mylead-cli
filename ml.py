@@ -18,7 +18,7 @@ class StatusError(Exception):
 BASE_URL = "https://mylead.global/api/external/v1/statistic/conversions"
 RATE_LIMIT = 20  # rate limit is 20 per one minute for this API endpoint
 SLEEP_TIME = 61  # seconds
-RETRY_ATTEMPTS = 2
+RETRY_ATTEMPTS = 7
 
 
 def retry_if_status_code_is_429(exception: BaseException) -> bool:
