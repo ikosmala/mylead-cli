@@ -1,6 +1,5 @@
 from datetime import date, datetime, timedelta
 from typing import Literal
-
 from pydantic import BaseModel, ConfigDict, Field, validator
 
 
@@ -38,10 +37,10 @@ class CreatedAt(BaseModel):
 
 
 class Lead(BaseModel):
-    model_config = ConfigDict(str_strip_whitespace=True)
+    model_config = ConfigDict(str_strip_whitespace=True, populate_by_name=True)
 
-    id: str
-    campaign_id: int = Field(gt=0)
+    lead_id: str = Field(alias="id", frozen=True)
+    campaign_id: int = Field(gt=0, frozen=True)
     campaign_name: str
     payout: float = Field(ge=0)
     currency: str
