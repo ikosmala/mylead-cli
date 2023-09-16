@@ -1,10 +1,11 @@
 import models
-from typing import Any
+from typing import Any, Callable
 from pydantic import ValidationError
 import orjson
 from datetime import timedelta, datetime
 import logging
 import pandas as pd
+import time
 
 
 def validate_data(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -43,3 +44,16 @@ def get_dataframe(data: list[dict[str, Any]]) -> pd.DataFrame:
 
 def one_year_ago_day() -> str:
     return str((datetime.now() - timedelta(days=365)).date())
+
+
+def benchmark(func: Callable[..., Any]) -> Callable[..., Any]:
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        start_time = time.perf_counter()
+        value = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        print(
+            f"The execution of {func.__name__} took {end_time - start_time:.5f} seconds."
+        )
+        return value
+
+    return wrapper

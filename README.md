@@ -11,7 +11,7 @@ This document outlines the steps to create a CLI MyLead API Tool, which includes
 ### Tasks
 
 - [x] Import `httpx` and `asyncio`
-- [x] Write an asynchronous function to fetch data from the API
+- [x] Write an asynchronous function to fetch data from the API with HTTP2 support
 - [x] Include error handling
 - [x] Paginate through API results
 - [x] Assemble all data into a single structure

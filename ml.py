@@ -16,7 +16,7 @@ class StatusError(Exception):
 
 
 BASE_URL = "https://mylead.global/api/external/v1/statistic/conversions"
-RATE_LIMIT = 20  # rate limit is 20 per one minute for this API endpoint
+RATE_LIMIT = 19  # rate limit is 20 per one minute for this API endpoint
 SLEEP_TIME = 61  # seconds
 RETRY_ATTEMPTS = 7
 
@@ -54,7 +54,7 @@ async def fetch_single_page(
             info = e.response.json()
             logging.error(
                 "Too many API calls in short amount of time. "
-                f"Will try to retry {RETRY_ATTEMPTS} times."
+                f"Will try to retry page number {page} for {RETRY_ATTEMPTS} times in total."
             )
         else:
             logging.error(f"An unexpected HTTP error occured: {e}")

@@ -3,7 +3,7 @@ import logging
 import sys
 from datetime import datetime
 from typing import Annotated, Any
-
+from time import perf_counter
 import pandas as pd
 import typer
 from dotenv import load_dotenv
@@ -18,7 +18,7 @@ from tables import choose_table
 
 DATEFORMATS = ["%Y-%m-%d", "%Y/%m/%d", "%d-%m-%Y", "%d/%m/%Y", "%Y.%m.%d", "%d.%m.%Y"]
 
-logging.basicConfig(level=logging.ERROR)
+logging.basicConfig(level=logging.INFO)
 
 app = typer.Typer()
 load_dotenv()
@@ -50,9 +50,10 @@ def fetch_data(
     from_file: bool,
     save_file: bool,
 ) -> list[dict[str, Any]]:
+    start_time = perf_counter()
     if not from_file:
         progress.add_task(description="Fetching data from MyLead API...", total=None)
-        api = models.Api(token=apikey, date_from=date_from, date_to=date_to)
+        api = models.Api(token=apikey, date_from=date_from, date_to=date_to, limit=100)
         all_data = asyncio.run(ml.fetch_all_pages_ML(api_data=api))
         if save_file:
             utils.data_to_file("myfile.json", all_data)
@@ -60,8 +61,8 @@ def fetch_data(
         # todo fetch from specified file
         progress.add_task(description="Fetching data from file...", total=None)
         all_data = utils.data_from_file("myfile.json")
-
-    print(f"Fetched {len(all_data)} leads")
+    end_time = perf_counter()
+    print(f"Fetched {len(all_data)} leads in {end_time-start_time:.2f} seconds.")
     return all_data
 
 
