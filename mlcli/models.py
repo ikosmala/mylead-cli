@@ -1,6 +1,6 @@
 from datetime import date, datetime, timedelta
 from typing import Literal
-from pydantic import BaseModel, ConfigDict, Field, validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class Api(BaseModel):
@@ -10,11 +10,11 @@ class Api(BaseModel):
     date_from: date = Field(default_factory=lambda: date.today() - timedelta(days=365))
     status: Literal["approved", "pending", "rejected", "pre_approved"] | None = None
 
-    @validator("date_to", pre=True)
+    @field_validator("date_to", mode="before")
     def strip_date_to(cls, value):
         return value.date()
 
-    @validator("date_from", pre=True)
+    @field_validator("date_from", mode="before")
     def strip_date_from(cls, value):
         return value.date()
 
