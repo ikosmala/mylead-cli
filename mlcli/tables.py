@@ -5,6 +5,7 @@ from rich.padding import Padding
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
+from utils import generate_caption
 
 
 def aggregate_data(
@@ -63,12 +64,10 @@ def table_from_data(
     column_name: str,
     sort_by: str = "total_payout",
 ) -> None:
-    start_date = data["created_at.date"].min().date()
-    end_date = data["created_at.date"].max().date()
+    caption = generate_caption(data)
     num_of_leads = len(data)
     result = aggregate_data(data, group_by_column=group_by_column, sort_by=sort_by)
     sum_payouts = result["total_payout"].sum()
-    caption = f"Data gathered between {start_date} and {end_date}"
 
     create_table(
         data=result,
@@ -78,6 +77,19 @@ def table_from_data(
         group_by_column=group_by_column,
         num_of_leads=num_of_leads,
         sum_payouts=sum_payouts,
+    )
+
+
+def print_console(console: Console, OPTIONS: dict[str, dict]) -> None:
+    console.print(
+        Panel(
+            "\n".join([f"{key}. {value['title']}" for key, value in OPTIONS.items()])
+            + "\n\n[bold]0. Exit[/bold]",
+            title="Available statistics",
+            expand=False,
+            box=box.ROUNDED,
+            border_style="gold1",
+        )
     )
 
 
@@ -110,17 +122,8 @@ def choose_table(df: pd.DataFrame) -> None:
             "column_name": "Hour",
         },
     }
+    print_console(console, OPTIONS)
 
-    console.print(
-        Panel(
-            "\n".join([f"{key}. {value['title']}" for key, value in OPTIONS.items()])
-            + "\n\n[bold]0. Exit[/bold]",
-            title="Available statistics",
-            expand=False,
-            box=box.ROUNDED,
-            border_style="gold1",
-        )
-    )
     while True:
         choice = Prompt.ask(
             "Pick a statistic to display or exit the program.",

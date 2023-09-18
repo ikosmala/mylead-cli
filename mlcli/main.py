@@ -72,21 +72,40 @@ def stats(
     date_from: Annotated[
         datetime,
         typer.Option(
+            "--date-from",
+            "-df",
             help="Start date for gathering data. Default: 365 days ago.",
             formats=DATEFORMATS,
             default_factory=utils.one_year_ago_day,
         ),
     ],
-    apikey: Annotated[str, typer.Argument(envvar="API_KEY")] = "",
+    apikey: Annotated[
+        str,
+        typer.Argument(
+            envvar="API_KEY", help="Your api key from https://mylead.global/panel/api"
+        ),
+    ] = "",
     date_to: Annotated[
         datetime,
         typer.Option(
-            help="End date for gathering data. Default: today", formats=DATEFORMATS
+            "--date-to",
+            "-dt",
+            help="End date for gathering data. Default: today",
+            formats=DATEFORMATS,
         ),
     ] = datetime.now(),
     save_file: Annotated[bool, typer.Option(help="Save leads to file")] = False,
     from_file: Annotated[bool, typer.Option(help="Load leads from file")] = False,
 ):
+    """
+    Shows data statistics from fetched leads from MyLead API.
+
+    You can specify date ranges by --date-from and --date-to.
+    API_KEY is REQUIRED. Can be specified in .env file or provided via command.
+
+    If --save-file is used then fetched data is saved to JSON file.
+    If --from-file is used then data is fetched from saved file rather than API.
+    """
     check_api_key(apikey)
     with Progress(
         SpinnerColumn(),
@@ -106,21 +125,40 @@ def charts(
     date_from: Annotated[
         datetime,
         typer.Option(
+            "--date-from",
+            "-df",
             help="Start date for gathering data. Default: 365 days ago.",
             formats=DATEFORMATS,
             default_factory=utils.one_year_ago_day,
         ),
     ],
-    apikey: Annotated[str, typer.Argument(envvar="API_KEY")] = "",
+    apikey: Annotated[
+        str,
+        typer.Argument(
+            envvar="API_KEY", help="Your api key from https://mylead.global/panel/api"
+        ),
+    ] = "",
     date_to: Annotated[
         datetime,
         typer.Option(
-            help="End date for gathering data. Default: today", formats=DATEFORMATS
+            "--date-to",
+            "-dt",
+            help="End date for gathering data. Default: today",
+            formats=DATEFORMATS,
         ),
     ] = datetime.now(),
     save_file: Annotated[bool, typer.Option(help="Save leads to file")] = False,
     from_file: Annotated[bool, typer.Option(help="Load leads from file")] = False,
 ):
+    """
+    Shows charts from fetched leads from MyLead API.
+
+    You can specify date ranges by --date-from and --date-to.
+    API_KEY is REQUIRED. Can be specified in .env file or provided via command.
+
+    If --save-file is used then fetched data is saved to JSON file.
+    If --from-file is used then data is fetched from saved file rather than API.
+    """
     check_api_key(apikey)
     with Progress(
         SpinnerColumn(),

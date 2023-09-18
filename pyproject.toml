@@ -1,11 +1,9 @@
 [tool.poetry]
 name = "mlcli"
 version = "0.1.0"
-description = "CLI for MyLead API"
-authors = ["Your Name <you@example.com>"]
-license = "MIT"
+description = ""
+authors = ["Iwo <kosmala.iwo@gmail.com>"]
 readme = "README.md"
-packages = [{include = "mylead_cli"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -23,6 +21,8 @@ plotly = "^5.16.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.289"
+pytest = "^7.4.2"
+
 
 [build-system]
 requires = ["poetry-core"]

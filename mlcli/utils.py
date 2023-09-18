@@ -48,6 +48,15 @@ def one_year_ago_day() -> str:
     return str((datetime.now() - timedelta(days=365)).date())
 
 
+def generate_caption(df: pd.DataFrame) -> str:
+    start_date = df["created_at.date"].min().date()
+    end_date = df["created_at.date"].max().date()
+    num_of_leads = len(df)
+    return (
+        f"Data gathered between {start_date} and {end_date} from {num_of_leads} leads"
+    )
+
+
 def benchmark(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         start_time = time.perf_counter()

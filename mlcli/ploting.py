@@ -5,6 +5,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
 import tables
+from utils import generate_caption
 
 
 def create_bar_chart(
@@ -61,12 +62,7 @@ def barchart_from_data(
     sort_by: str = "total_payout",
     invert_colors: bool = False,
 ) -> None:
-    start_date = df["created_at.date"].min().date()
-    end_date = df["created_at.date"].max().date()
-    num_of_leads = len(df)
-    caption = (
-        f"Data gathered between {start_date} and {end_date} from {num_of_leads} leads"
-    )
+    caption = generate_caption(df)
     aggregated_data = tables.aggregate_data(
         data=df, group_by_column=group_by_column, sort_by=sort_by
     )
@@ -79,6 +75,19 @@ def barchart_from_data(
         y_label=y_label,
         caption=caption,
         invert_colors=invert_colors,
+    )
+
+
+def print_options(console: Console, OPTIONS: dict[str, dict]) -> None:
+    console.print(
+        Panel(
+            "\n".join([f"{key}. {value['title']}" for key, value in OPTIONS.items()])
+            + "\n\n[bold]0. Exit[/bold]",
+            title="Available charts",
+            expand=False,
+            box=box.ROUNDED,
+            border_style="gold1",
+        )
     )
 
 
@@ -128,16 +137,7 @@ def choose_graph(df: pd.DataFrame) -> None:
             "invert_colors": False,
         },
     }
-    console.print(
-        Panel(
-            "\n".join([f"{key}. {value['title']}" for key, value in OPTIONS.items()])
-            + "\n\n[bold]0. Exit[/bold]",
-            title="Available charts",
-            expand=False,
-            box=box.ROUNDED,
-            border_style="gold1",
-        )
-    )
+    print_options(console, OPTIONS)
     while True:
         choice = Prompt.ask(
             "Pick a chart to display or exit the program.",
