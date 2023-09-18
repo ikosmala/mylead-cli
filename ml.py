@@ -54,7 +54,7 @@ async def fetch_single_page(
             info = e.response.json()
             logging.error(
                 "Too many API calls in short amount of time. "
-                f"Will try to retry page number {page} for {RETRY_ATTEMPTS} times in total."
+                f"Will try to retry page n.{page} for {RETRY_ATTEMPTS} times in total."
             )
         else:
             logging.error(f"An unexpected HTTP error occured: {e}")

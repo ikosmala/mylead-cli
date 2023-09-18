@@ -18,7 +18,7 @@ from tables import choose_table
 
 DATEFORMATS = ["%Y-%m-%d", "%Y/%m/%d", "%d-%m-%Y", "%d/%m/%Y", "%Y.%m.%d", "%d.%m.%Y"]
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 app = typer.Typer()
 load_dotenv()
@@ -39,6 +39,7 @@ def process_data(data: list[dict[str, Any]]) -> pd.DataFrame:
         sys.exit()
     df = utils.get_dataframe(data)
     df["hour_of_day"] = df["created_at.date"].dt.hour.astype(int)
+    df["day_of_week"] = df["created_at.date"].dt.day_name()
     return df
 
 
@@ -53,7 +54,7 @@ def fetch_data(
     start_time = perf_counter()
     if not from_file:
         progress.add_task(description="Fetching data from MyLead API...", total=None)
-        api = models.Api(token=apikey, date_from=date_from, date_to=date_to, limit=100)
+        api = models.Api(token=apikey, date_from=date_from, date_to=date_to, limit=500)
         all_data = asyncio.run(ml.fetch_all_pages_ML(api_data=api))
         if save_file:
             utils.data_to_file("myfile.json", all_data)
@@ -131,20 +132,7 @@ def charts(
         )
         df = process_data(all_data)
 
-    ploting.create_bar_graph(
-        df,
-        group_by_column="country",
-        title="Country statistics",
-        x_label="Country",
-        y_label="Leads value",
-    )
-    ploting.create_bar_graph(
-        df,
-        group_by_column="user_agent.operation_system",
-        title="Operating system statistics",
-        x_label="Operating system",
-        y_label="Leads value",
-    )
+    ploting.choose_graph(df)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 import models
-from typing import Any, Callable
+from typing import Any
+from collections.abc import Callable
 from pydantic import ValidationError
 import orjson
 from datetime import timedelta, datetime
@@ -15,6 +16,7 @@ def validate_data(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
             valid_item = models.Lead(**item)
             valid_data.append(valid_item.model_dump())
         except ValidationError as e:
+            print(f"Error: {e.errors()}")
             print(e)
 
     return valid_data
@@ -52,7 +54,7 @@ def benchmark(func: Callable[..., Any]) -> Callable[..., Any]:
         value = func(*args, **kwargs)
         end_time = time.perf_counter()
         print(
-            f"The execution of {func.__name__} took {end_time - start_time:.5f} seconds."
+            f"The execution of {func.__name__} took {end_time - start_time:.5f} seconds"
         )
         return value
 
