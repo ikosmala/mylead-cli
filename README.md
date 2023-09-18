@@ -1,0 +1,64 @@
+# To-Do List for CLI MyLead API Tool
+
+## Introduction
+
+This document outlines the steps to create a CLI MyLead API Tool, which includes fetching data from an API, storing it in a Pandas DataFrame, providing a CLI interface using Typer, and visualizing the data using Plotly.
+
+---
+
+## 1. Async Request to API using httpx and asyncio
+
+### Tasks
+
+- [x] Import `httpx` and `asyncio`
+- [x] Write an asynchronous function to fetch data from the API with HTTP2 support
+- [x] Include error handling
+- [x] Paginate through API results
+- [x] Assemble all data into a single structure
+
+---
+
+## 2. Storing Data in DataFrame
+
+### Tasks
+
+- [x] Import Pandas
+- [x] Validate and modfiy data via Pydantic
+  - [x] Strip whitespaces, add pre-validators if necessary
+- [x] Convert the API JSON response to a Pandas DataFrame
+  - [x] Utilize `pd.json_normalize()` if needed
+- [x] Handle nested data and create new columns if necessary
+- [x] Inspect the DataFrame to ensure data is correctly loaded
+
+---
+
+## 3. Make CLI Support with Typer
+
+### Tasks
+
+- [x] Install and import Typer
+- [x] Create main CLI function
+- [x] Add sub-commands for different operations
+  - [x] `API KEY support`
+    - [x] Add an option to specify API KEY
+  - [x] `Saving data to file`
+  - [x] `Statistics` for data not available in MyLead Dashboard
+    - [x] Implement a `stats` command to show summary statistics
+
+---
+
+## 4. Graphs with Seaborn
+
+### Tasks
+
+- [x] Install and import Plotly
+- [x] Create visualizations based on DataFrame
+  - [x] Bar graphs for categorical data
+
+---
+
+## Final Steps
+
+- [ ] Test all functionalities
+- [ ] Document the code properly
+- [x] Optimize for performance

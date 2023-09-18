@@ -1,4 +1,4 @@
-from .. import utils
+from ..mlcli import utils
 from unittest.mock import patch
 from datetime import datetime, timedelta
 

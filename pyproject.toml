@@ -5,6 +5,9 @@ description = ""
 authors = ["Iwo <kosmala.iwo@gmail.com>"]
 readme = "README.md"
 
+[tool.poetry.scripts]
+mlcli = "mlcli.main:app"
+
 [tool.poetry.dependencies]
 python = "^3.11"
 typer = {extras = ["all"], version = "^0.9.0"}

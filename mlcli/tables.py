@@ -5,7 +5,7 @@ from rich.padding import Padding
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
-from utils import generate_caption
+from .utils import generate_caption
 
 
 def aggregate_data(

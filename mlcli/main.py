@@ -10,11 +10,11 @@ from dotenv import load_dotenv
 from rich import print
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
-import ml
-import models
-import ploting
-import utils
-from tables import choose_table
+from . import ml
+from . import models
+from . import ploting
+from . import utils
+from .tables import choose_table
 
 DATEFORMATS = ["%Y-%m-%d", "%Y/%m/%d", "%d-%m-%Y", "%d/%m/%Y", "%Y.%m.%d", "%d.%m.%Y"]
 

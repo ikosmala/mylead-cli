@@ -6,7 +6,7 @@ from typing import Any
 import httpx
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_fixed
 
-import models
+from . import models
 
 
 class StatusError(Exception):

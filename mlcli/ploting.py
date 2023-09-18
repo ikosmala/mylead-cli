@@ -4,8 +4,8 @@ from rich import box
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
-import tables
-from utils import generate_caption
+from . import tables
+from .utils import generate_caption
 
 
 def create_bar_chart(
