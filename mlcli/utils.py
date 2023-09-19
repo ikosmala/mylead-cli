@@ -1,12 +1,14 @@
-from . import models
-from typing import Any
-from collections.abc import Callable
-from pydantic import ValidationError
-import orjson
-from datetime import timedelta, datetime
 import logging
-import pandas as pd
 import time
+from collections.abc import Callable
+from datetime import datetime, timedelta
+from typing import Any
+
+import orjson
+import pandas as pd
+from pydantic import ValidationError
+
+from . import models
 
 
 def validate_data(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -52,9 +54,7 @@ def generate_caption(df: pd.DataFrame) -> str:
     start_date = df["created_at.date"].min().date()
     end_date = df["created_at.date"].max().date()
     num_of_leads = len(df)
-    return (
-        f"Data gathered between {start_date} and {end_date} from {num_of_leads} leads"
-    )
+    return f"Data gathered between {start_date} and {end_date} from {num_of_leads} leads"
 
 
 def benchmark(func: Callable[..., Any]) -> Callable[..., Any]:
@@ -63,7 +63,7 @@ def benchmark(func: Callable[..., Any]) -> Callable[..., Any]:
         value = func(*args, **kwargs)
         end_time = time.perf_counter()
         print(
-            f"The execution of {func.__name__} took {end_time - start_time:.5f} seconds"
+            f"The execution of {func.__name__} took {end_time - start_time:.5f} seconds",
         )
         return value
 

@@ -5,11 +5,14 @@ from rich.padding import Padding
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
+
 from .utils import generate_caption
 
 
 def aggregate_data(
-    data: pd.DataFrame, group_by_column: str, sort_by: str = "total_payout"
+    data: pd.DataFrame,
+    group_by_column: str,
+    sort_by: str = "total_payout",
 ) -> pd.DataFrame:
     selected_columns = [group_by_column, "payout"]
     df = data[selected_columns]
@@ -36,10 +39,16 @@ def create_table(
     table = Table(title=title, caption=caption, box=box.ROUNDED, header_style="gold1")
     table.add_column(column_name, justify="left", style="cyan", no_wrap=True)
     table.add_column(
-        "No. of leads (% of total)", justify="right", style="white", no_wrap=True
+        "No. of leads (% of total)",
+        justify="right",
+        style="white",
+        no_wrap=True,
     )
     table.add_column(
-        "Total payout (% of total)", justify="right", style="green", no_wrap=True
+        "Total payout (% of total)",
+        justify="right",
+        style="green",
+        no_wrap=True,
     )
     data[group_by_column] = data[group_by_column].astype(str)
 
@@ -89,7 +98,7 @@ def print_console(console: Console, OPTIONS: dict[str, dict]) -> None:
             expand=False,
             box=box.ROUNDED,
             border_style="gold1",
-        )
+        ),
     )
 
 
@@ -120,6 +129,11 @@ def choose_table(df: pd.DataFrame) -> None:
             "title": "Statistics by hour of the day.",
             "group_by_column": "hour_of_day",
             "column_name": "Hour",
+        },
+        "6": {
+            "title": "Statistics by day of the week.",
+            "group_by_column": "day_of_week",
+            "column_name": "Day",
         },
     }
     print_console(console, OPTIONS)

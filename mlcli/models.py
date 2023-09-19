@@ -1,5 +1,6 @@
 from datetime import date, datetime, timedelta
 from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
@@ -12,6 +13,7 @@ class Api(BaseModel):
 
     @field_validator("date_to", mode="before")
     def strip_date_to(cls, value):
+        # TODO: if isinstance of datetime then strip
         return value.date()
 
     @field_validator("date_from", mode="before")

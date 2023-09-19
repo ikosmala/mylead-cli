@@ -1,5 +1,6 @@
-from unittest.mock import patch
 from datetime import datetime, timedelta
+from unittest.mock import patch
+
 from mlcli import utils
 
 
