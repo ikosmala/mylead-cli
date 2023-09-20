@@ -20,7 +20,7 @@ def validate_data(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
         except ValidationError as e:
             print(f"Error: {e.errors()}")
             print(e)
-
+            raise
     return valid_data
 
 
