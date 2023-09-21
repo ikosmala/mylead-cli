@@ -4,6 +4,7 @@ from pydantic import ValidationError
 from mlcli import utils
 import pytest
 from pytest_mock import MockerFixture
+import pandas as pd
 
 
 @pytest.fixture
@@ -46,3 +47,21 @@ def test_data_to_file(data_for_validation, mocker: MockerFixture):
 def test_data_from_file(tmp_file_with_data, data_for_validation):
     data = utils.data_from_file(tmp_file_with_data)
     assert len(data) == len(data_for_validation)
+
+
+def test_get_dataframe(data_for_validation):
+    df = utils.get_dataframe(data_for_validation)
+    assert isinstance(df, pd.DataFrame)
+    assert df["campaign_id"].dtype == "int64"
+    assert df["payout"].dtype == "float64"
+
+
+def test_get_dataframe_failed(invalid_data_for_validation):
+    with pytest.raises(ValidationError):
+        utils.get_dataframe(invalid_data_for_validation)
+
+
+def test_generate_caption(dataframe_data):
+    caption = utils.generate_caption(dataframe_data)
+    num_of_leads = len(dataframe_data)
+    assert f"{num_of_leads} leads" in caption

@@ -1,8 +1,7 @@
 import pytest
 import json
-import orjson
-from typing import Any
 from mlcli import utils
+import pandas as pd
 
 
 @pytest.fixture()
@@ -51,3 +50,8 @@ def invalid_data_for_validation() -> utils.DataList:
 @pytest.fixture()
 def validated_data(data_for_validation: utils.DataList) -> utils.DataList:
     return utils.validate_data(data_for_validation)
+
+
+@pytest.fixture()
+def dataframe_data(data_for_validation: utils.DataList) -> pd.DataFrame:
+    return utils.get_dataframe(data_for_validation)

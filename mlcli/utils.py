@@ -17,8 +17,7 @@ def validate_data(data: DataList) -> DataList:
     valid_data = []
     for item in data:
         try:
-            valid_item = models.Lead(**item)
-            valid_data.append(valid_item.model_dump())
+            valid_data.append(models.Lead(**item).model_dump())
         except ValidationError as e:
             print(f"Error: {e.errors()}")
             print(e)
