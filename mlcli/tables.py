@@ -1,3 +1,8 @@
+"""
+Module for generating and displaying rich tables with aggregated data.
+This module provides functions for aggregating data, creating rich tables,
+and allowing users to choose which statistics to display.
+"""
 import pandas as pd
 from rich import box
 from rich.console import Console
@@ -6,7 +11,7 @@ from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
 
-from .utils import generate_caption
+from mlcli.utils import generate_caption
 
 
 def aggregate_data(
@@ -14,6 +19,17 @@ def aggregate_data(
     group_by_column: str,
     sort_by: str = "total_payout",
 ) -> pd.DataFrame:
+    """
+    Aggregate data by a specified column and calculate total payout for each group.
+
+    Args:
+        data (pd.DataFrame): The input DataFrame.
+        group_by_column (str): The column by which to group the data.
+        sort_by (str, optional): The column to sort the result by. Defaults to "total_payout".
+
+    Returns:
+        pd.DataFrame: The aggregated DataFrame.
+    """
     selected_columns = [group_by_column, "payout"]
     df = data[selected_columns]
     return (
@@ -36,6 +52,18 @@ def create_table(
     num_of_leads: int,
     sum_payouts: float,
 ) -> None:
+    """
+    Create a rich table to display aggregated data.
+
+    Args:
+        data (pd.DataFrame): The aggregated data.
+        title (str): The title of the table.
+        caption (str): The caption for the table.
+        column_name (str): The name of the column to display.
+        group_by_column (str): The column used for grouping.
+        num_of_leads (int): The total number of leads.
+        sum_payouts (float): The total sum of payouts.
+    """
     table = Table(title=title, caption=caption, box=box.ROUNDED, header_style="gold1")
     table.add_column(column_name, justify="left", style="cyan", no_wrap=True)
     table.add_column(
@@ -73,6 +101,16 @@ def table_from_data(
     column_name: str,
     sort_by: str = "total_payout",
 ) -> None:
+    """
+    Create a rich table from input data.
+
+    Args:
+        data (pd.DataFrame): The input data.
+        title (str): The title of the table.
+        group_by_column (str): The column to group by.
+        column_name (str): The name of the column to display.
+        sort_by (str, optional): The column to sort the result by. Defaults to "total_payout".
+    """
     caption = generate_caption(data)
     num_of_leads = len(data)
     result = aggregate_data(data, group_by_column=group_by_column, sort_by=sort_by)
@@ -89,10 +127,17 @@ def table_from_data(
     )
 
 
-def print_console(console: Console, OPTIONS: dict[str, dict]) -> None:
+def print_console(console: Console, options: dict[str, dict]) -> None:
+    """
+    Print a menu of available statistics options.
+
+    Args:
+        console (Console): The Rich Console object for output.
+        options (dict[str, dict]): A dictionary of statistic options.
+    """
     console.print(
         Panel(
-            "\n".join([f"{key}. {value['title']}" for key, value in OPTIONS.items()])
+            "\n".join([f"{key}. {value['title']}" for key, value in options.items()])
             + "\n\n[bold]0. Exit[/bold]",
             title="Available statistics",
             expand=False,
@@ -103,6 +148,12 @@ def print_console(console: Console, OPTIONS: dict[str, dict]) -> None:
 
 
 def choose_table(df: pd.DataFrame) -> None:
+    """
+    Display a menu of statistics options and allow the user to choose which one to display.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame.
+    """
     console = Console()
     OPTIONS = {
         "1": {

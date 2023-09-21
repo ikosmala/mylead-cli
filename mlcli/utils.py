@@ -8,10 +8,12 @@ import orjson
 import pandas as pd
 from pydantic import ValidationError
 
-from . import models
+from mlcli import models
+
+DataList = list[dict[str, Any]]
 
 
-def validate_data(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def validate_data(data: DataList) -> DataList:
     valid_data = []
     for item in data:
         try:
@@ -24,15 +26,15 @@ def validate_data(data: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return valid_data
 
 
-def data_to_file(file_name: str, data: list[dict[str, Any]]) -> None:
+def data_to_file(file_name: str, data: DataList) -> None:
     valid_data = validate_data(data)
     with open(file_name, "wb") as f:
-        json_str = orjson.dumps(valid_data, option=orjson.OPT_INDENT_2)
-        f.write(json_str)
+        content = orjson.dumps(valid_data, option=orjson.OPT_INDENT_2)
+        f.write(content)
         logging.info(f"Data saved to file {file_name}")
 
 
-def data_from_file(file_name: str) -> list[dict[str, Any]]:
+def data_from_file(file_name: str) -> DataList:
     with open(file_name, "rb") as f:
         json_bytes = f.read()
         logging.info(f"Data read from file {file_name}")
@@ -41,7 +43,7 @@ def data_from_file(file_name: str) -> list[dict[str, Any]]:
     return validate_data(data_from_json)
 
 
-def get_dataframe(data: list[dict[str, Any]]) -> pd.DataFrame:
+def get_dataframe(data: DataList) -> pd.DataFrame:
     validated_data = validate_data(data)
     return pd.json_normalize(validated_data)
 

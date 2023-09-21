@@ -57,3 +57,14 @@ fixable = ["ALL"]
 
 target-version = "py311"
 show-fixes= true
+
+[tool.coverage.paths]
+source = ["mlcli", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["mlcli"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100

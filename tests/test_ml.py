@@ -7,7 +7,7 @@ from mlcli.ml import (
     fetch_single_page,
     models,
     StatusError,
-    fetch_all_pages_ML,
+    fetch_all_pages_ml,
 )
 from tenacity import wait_none
 import tenacity
@@ -127,7 +127,7 @@ async def test_fetch_single_page_too_many_api_calls_failed(
 
 
 @pytest.mark.asyncio()
-async def test_fetch_single_page_failed_StatusError(
+async def test_fetch_single_page_failed_status_error(
     httpx_mock: HTTPXMock, caplog: pytest.LogCaptureFixture, api_data
 ):
     """
@@ -151,14 +151,14 @@ async def test_fetch_single_page_failed_StatusError(
 
 
 @pytest.mark.asyncio()
-async def test_fetch_all_pages_ML_success(httpx_mock: HTTPXMock, success_response_json, api_data):
+async def test_fetch_all_pages_ml_success(httpx_mock: HTTPXMock, success_response_json, api_data):
     """
     Test for successful retrieval of list of leads from API. Single page.
     """
     httpx_mock.add_response(json=success_response_json)
 
     async with httpx.AsyncClient(http2=True):
-        all_data = await fetch_all_pages_ML(api_data)
+        all_data = await fetch_all_pages_ml(api_data)
 
     assert isinstance(all_data, list)
     assert len(all_data) == len(success_response_json["data"][0]["conversions"])

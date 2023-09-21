@@ -3,6 +3,14 @@ from unittest.mock import patch
 from pydantic import ValidationError
 from mlcli import utils
 import pytest
+from pytest_mock import MockerFixture
+
+
+@pytest.fixture
+def tmp_file_with_data(tmp_path, data_for_validation):
+    file_path = tmp_path / "test_file.json"
+    utils.data_to_file(file_path, data_for_validation)
+    return file_path
 
 
 def test_one_year_ago_day():
@@ -21,5 +29,20 @@ def test_validate_data(data_for_validation):
 
 
 def test_validate_data_failed(invalid_data_for_validation):
-    with pytest.raises(ValidationError) as excinfo:
+    with pytest.raises(ValidationError):
         utils.validate_data(invalid_data_for_validation)
+
+
+def test_data_to_file(data_for_validation, mocker: MockerFixture):
+    filename = "test_file"
+    mock_file = mocker.mock_open()
+    mocker.patch("builtins.open", mock_file)
+
+    utils.data_to_file(filename, data_for_validation)
+
+    mock_file.assert_called_once_with(filename, "wb")
+
+
+def test_data_from_file(tmp_file_with_data, data_for_validation):
+    data = utils.data_from_file(tmp_file_with_data)
+    assert len(data) == len(data_for_validation)

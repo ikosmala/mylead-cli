@@ -12,13 +12,12 @@ class Api(BaseModel):
     status: Literal["approved", "pending", "rejected", "pre_approved"] | None = None
 
     @field_validator("date_to", mode="before")
-    def strip_date_to(cls, value):
-        # TODO: if isinstance of datetime then strip
-        return value.date()
+    def strip_date_to(cls, value: datetime) -> date:
+        return value.date() if datetime else value
 
     @field_validator("date_from", mode="before")
-    def strip_date_from(cls, value):
-        return value.date()
+    def strip_date_from(cls, value: datetime) -> date:
+        return value.date() if datetime else value
 
 
 class UserAgent(BaseModel):

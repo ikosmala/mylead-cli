@@ -5,8 +5,8 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
 
-from . import tables
-from .utils import generate_caption
+from mlcli import tables
+from mlcli.utils import generate_caption
 
 
 def create_bar_chart(
@@ -48,7 +48,12 @@ def create_bar_chart(
     )
 
     fig.add_annotation(
-        text=caption, xref="paper", yref="paper", x=0.5, y=1.05, showarrow=False,
+        text=caption,
+        xref="paper",
+        yref="paper",
+        x=0.5,
+        y=1.05,
+        showarrow=False,
     )
 
     fig.show()
@@ -65,7 +70,9 @@ def barchart_from_data(
 ) -> None:
     caption = generate_caption(df)
     aggregated_data = tables.aggregate_data(
-        data=df, group_by_column=group_by_column, sort_by=sort_by,
+        data=df,
+        group_by_column=group_by_column,
+        sort_by=sort_by,
     )
 
     create_bar_chart(
@@ -79,10 +86,10 @@ def barchart_from_data(
     )
 
 
-def print_options(console: Console, OPTIONS: dict[str, dict]) -> None:
+def print_options(console: Console, options: dict[str, dict]) -> None:
     console.print(
         Panel(
-            "\n".join([f"{key}. {value['title']}" for key, value in OPTIONS.items()])
+            "\n".join([f"{key}. {value['title']}" for key, value in options.items()])
             + "\n\n[bold]0. Exit[/bold]",
             title="Available charts",
             expand=False,

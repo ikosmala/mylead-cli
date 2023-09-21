@@ -6,7 +6,7 @@ from typing import Any
 import httpx
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_fixed
 
-from . import models
+from mlcli import models
 
 
 class StatusError(Exception):
@@ -25,7 +25,7 @@ def retry_if_status_code_is_429(exception: BaseException) -> bool:
 
 
 # Define a function to handle HTTP status errors and log messages.
-def handle_http_status_error(e: httpx.HTTPStatusError, page: int):
+def handle_http_status_error(e: httpx.HTTPStatusError, page: int) -> None:
     if e.response.status_code in [401, 403]:
         info = e.response.json()
         logging.error(f"Reason: {info['errors']['authorization'][0]}")
@@ -73,7 +73,7 @@ async def fetch_single_page(
     return json_data
 
 
-async def fetch_all_pages_ML(api_data: models.Api) -> list[dict[str, Any]]:
+async def fetch_all_pages_ml(api_data: models.Api) -> list[dict[str, Any]]:
     all_data = []
 
     async with httpx.AsyncClient(http2=True) as client:

@@ -11,9 +11,9 @@ from dotenv import load_dotenv
 from rich import print
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
-from . import ml, models, utils
-from .plotting import choose_graph
-from .tables import choose_table
+from mlcli import ml, models, utils
+from mlcli.plotting import choose_graph
+from mlcli.tables import choose_table
 
 DATE_FORMATS = ["%Y-%m-%d", "%Y/%m/%d", "%d-%m-%Y", "%d/%m/%Y", "%Y.%m.%d", "%d.%m.%Y"]
 
@@ -26,7 +26,7 @@ app = typer.Typer()
 load_dotenv()
 
 
-def check_api_key(apikey: str):
+def check_api_key(apikey: str) -> None:
     """Check if the API key is provided."""
     if not apikey:
         print(
@@ -60,7 +60,7 @@ def fetch_data(
     if not from_file:
         progress.add_task(description="Fetching data from MyLead API...", total=None)
         api = models.Api(token=apikey, date_from=date_from, date_to=date_to, limit=500)
-        all_data = asyncio.run(ml.fetch_all_pages_ML(api_data=api))
+        all_data = asyncio.run(ml.fetch_all_pages_ml(api_data=api))
         if save_file:
             utils.data_to_file("myfile.json", all_data)
     else:
@@ -103,7 +103,7 @@ def stats(
     save_file: Annotated[bool, typer.Option(help="Save leads to file")] = False,
     from_file: Annotated[bool, typer.Option(help="Load leads from file")] = False,
     charts: Annotated[bool, typer.Option(help="Show charts instead of tables")] = False,
-):
+) -> None:
     """Shows statistics for data retrieved from the MyLead API.
 
     You can specify date ranges using the --date-from and --date-to options.
