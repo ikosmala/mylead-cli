@@ -7,7 +7,7 @@ from pytest_mock import MockerFixture
 import pandas as pd
 
 
-@pytest.fixture
+@pytest.fixture()
 def tmp_file_with_data(tmp_path, data_for_validation):
     file_path = tmp_path / "test_file.json"
     utils.data_to_file(file_path, data_for_validation)

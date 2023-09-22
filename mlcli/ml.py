@@ -21,11 +21,34 @@ RETRY_ATTEMPTS = 7
 
 # Define a function to check if the status code is 429 (Too Many Requests).
 def retry_if_status_code_is_429(exception: BaseException) -> bool:
+    """
+    Check if the exception is an HTTP status error with status code 429.
+
+    Args:
+        exception (BaseException): The exception to check.
+
+    Returns:
+        bool: True if the exception is an HTTP status error with status code 429, False otherwise.
+    """
+
     return isinstance(exception, httpx.HTTPStatusError) and exception.response.status_code == 429
 
 
 # Define a function to handle HTTP status errors and log messages.
 def handle_http_status_error(e: httpx.HTTPStatusError, page: int) -> None:
+    """
+    Handle HTTP status errors.
+
+    Args:
+        e (httpx.HTTPStatusError): The HTTP status error.
+        page (int): The page number where the error occurred.
+
+    Returns:
+        None
+
+    Raises:
+        httpx.HTTPStatusError: Re-raises the original HTTP status error.
+    """
     if e.response.status_code in [401, 403]:
         info = e.response.json()
         logging.error(f"Reason: {info['errors']['authorization'][0]}")
@@ -54,6 +77,22 @@ async def fetch_single_page(
     api_data: models.Api,
     page: int,
 ) -> dict[str, Any]:
+    """
+    Fetches a single page of data from the API.
+
+    Args:
+        client (httpx.AsyncClient): The HTTP async client used for making requests.
+        api_data (models.Api): The API request data.
+        page (int): The page number to fetch.
+
+    Returns:
+        dict[str, Any]: The JSON response data.
+
+    Raises:
+        httpx.HTTPStatusError: Raised when an HTTP status error occurs.
+        StatusError: Raised when the response status is not "success".
+    """
+
     params = api_data.model_dump(exclude_none=True)
     params["page"] = page
     try:
@@ -74,6 +113,14 @@ async def fetch_single_page(
 
 
 async def fetch_all_pages_ml(api_data: models.Api) -> list[dict[str, Any]]:
+    """
+    Fetches all pages of data from the ML API.
+
+    Args:
+        api_data (models.Api): The API request data.
+
+    Returns:
+        list[dict[str, Any]]: The list of all data retrieved from the API."""
     all_data = []
 
     async with httpx.AsyncClient(http2=True) as client:

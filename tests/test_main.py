@@ -7,5 +7,5 @@ def test_check_apikey():
 
 
 def test_check_apikey_fail():
-    with pytest.raises(SystemExit) as e:
+    with pytest.raises(SystemExit):
         main.check_api_key("")

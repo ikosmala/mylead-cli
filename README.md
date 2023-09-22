@@ -1,64 +1,68 @@
-# To-Do List for CLI MyLead API Tool
+# mlcli - CLI tool for MyLead API
 
-## Introduction
+This package provides a command-line tool for generating statistics and charts from the MyLead API. With it, you can easily retrieve data from the API, store it in a Pandas DataFrame, save it to a file, create a user-friendly CLI interface using Typer, and visualize the data using Plotly.
 
-This document outlines the steps to create a CLI MyLead API Tool, which includes fetching data from an API, storing it in a Pandas DataFrame, providing a CLI interface using Typer, and visualizing the data using Plotly.
+The data presented by this tool is not available in the standard MyLead dashboard.
 
----
+It's built on an asynchronous foundation, utilizing the httpx library with HTTP/2 support, and further enhancing performance with orjson. Data integrity is ensured through validation with Pydantic.
 
-## 1. Async Request to API using httpx and asyncio
+**No data is send to third parties.**
 
-### Tasks
+## Performance
 
-- [x] Import `httpx` and `asyncio`
-- [x] Write an asynchronous function to fetch data from the API with HTTP2 support
-- [x] Include error handling
-- [x] Paginate through API results
-- [x] Assemble all data into a single structure
+**Due to API rate limiting, the maximum fetching speed from the API is restricted to 10,000 leads per 60 seconds**
 
----
+### Examples
 
-## 2. Storing Data in DataFrame
+Fetching and processing up to 10,000 leads takes approximately 1.5 seconds.
 
-### Tasks
+Fetching and processing one million leads from file takes only 40sec.
+Fetching same amount from API would rougly take 1h 40min.
 
-- [x] Import Pandas
-- [x] Validate and modfiy data via Pydantic
-  - [x] Strip whitespaces, add pre-validators if necessary
-- [x] Convert the API JSON response to a Pandas DataFrame
-  - [x] Utilize `pd.json_normalize()` if needed
-- [x] Handle nested data and create new columns if necessary
-- [x] Inspect the DataFrame to ensure data is correctly loaded
+The API rate limit acts as a bottleneck. Fortunately, in a typical scenario where a user has around 10,000 to 30,000 leads from the last 365 days, the process usually takes from 2 to 186 seconds.
 
----
+## Installation
 
-## 3. Make CLI Support with Typer
+Install with pip
 
-### Tasks
+```bash
+  pip install mlcli
+```
 
-- [x] Install and import Typer
-- [x] Create main CLI function
-- [x] Add sub-commands for different operations
-  - [x] `API KEY support`
-    - [x] Add an option to specify API KEY
-  - [x] `Saving data to file`
-  - [x] `Statistics` for data not available in MyLead Dashboard
-    - [x] Implement a `stats` command to show summary statistics
+## Environment Variables
 
----
+You can provide your API_KEY as environment variables to your .env file or just paste it as argument in command line.
 
-## 4. Graphs with Seaborn
+You can get your API_KEY here: https://mylead.global/panel/api
 
-### Tasks
+```
+API_KEY=YOUR_API_KEY_FROM_MYLEAD_DASHBOARD
+```
 
-- [x] Install and import Plotly
-- [x] Create visualizations based on DataFrame
-  - [x] Bar graphs for categorical data
+## Usage/Examples
 
----
+To fetch and present data in tables for leads from last 365 days use:
 
-## Final Steps
+```bash
+mlcli YOUR_API_KEY
+```
 
-- [ ] Test all functionalities
-- [ ] Document the code properly
-- [x] Optimize for performance
+For charts
+
+```bash
+mlcli YOUR_API_KEY --charts
+```
+
+For more information use:
+
+```bash
+mlcli --help
+```
+
+## Features
+
+- [x] Charts for data not available in MyLead dashboard
+- [x] Presenting data in tables
+- [x] Async support for best performance
+- [ ] Mean/Max/Min/Avg statistics
+- [ ] More flexibility with file saving/reading

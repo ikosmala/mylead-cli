@@ -112,7 +112,7 @@ def table_from_data(
         sort_by (str, optional): The column to sort the result by. Defaults to "total_payout".
     """
     caption = generate_caption(data)
-    num_of_leads = len(data)
+    num_of_leads = data.shape[0]
     result = aggregate_data(data, group_by_column=group_by_column, sort_by=sort_by)
     sum_payouts = result["total_payout"].sum()
 
@@ -157,17 +157,17 @@ def choose_table(df: pd.DataFrame) -> None:
     console = Console()
     OPTIONS = {
         "1": {
-            "title": "Type of device on which leads were created.",
+            "title": "Statistics based on the device of lead origin.",
             "group_by_column": "user_agent.device",
             "column_name": "Device Type",
         },
         "2": {
-            "title": "Operating system on which leads were created.",
+            "title": "Statistics based on the operating system of lead origin.",
             "group_by_column": "user_agent.operation_system",
             "column_name": "Operating System",
         },
         "3": {
-            "title": "Country from which leads were created.",
+            "title": "Statistics based on the country of lead origin.",
             "group_by_column": "country",
             "column_name": "Country",
         },

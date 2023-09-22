@@ -5,6 +5,8 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class Api(BaseModel):
+    """API Request data model with validators"""
+
     token: str
     limit: Literal[10, 20, 50, 100, 500] = 500
     date_to: date = Field(default_factory=lambda: date.today())
@@ -21,6 +23,8 @@ class Api(BaseModel):
 
 
 class UserAgent(BaseModel):
+    """API partial response model"""
+
     name: str
     operation_system: str
     operation_system_version: str
@@ -32,12 +36,16 @@ class UserAgent(BaseModel):
 
 
 class CreatedAt(BaseModel):
+    """API partial response model"""
+
     date: datetime
     timezone_type: int
     timezone: str
 
 
 class Lead(BaseModel):
+    """API response model"""
+
     model_config = ConfigDict(str_strip_whitespace=True, populate_by_name=True)
 
     lead_id: str = Field(alias="id", frozen=True)

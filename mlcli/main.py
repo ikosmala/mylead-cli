@@ -27,7 +27,18 @@ load_dotenv()
 
 
 def check_api_key(apikey: str) -> None:
-    """Check if the API key is provided."""
+    """
+    Check if the API key is provided.
+
+    Args:
+        apikey (str): The API key to be checked.
+
+    Returns:
+        None
+
+    Raises:
+        SystemExit: Raised when the API key is missing.
+    """
     if not apikey:
         print(
             "Missing API Key: Ensure you supply an API Key "
@@ -36,8 +47,21 @@ def check_api_key(apikey: str) -> None:
         sys.exit()
 
 
+@utils.benchmark
 def process_data(data: list[dict[str, Any]]) -> pd.DataFrame:
-    """Process the fetched data into a DataFrame."""
+    """
+    Process the fetched data into a DataFrame.
+
+    Args:
+        data (list[dict[str, Any]]): The fetched data to be processed.
+
+    Returns:
+        pd.DataFrame: The processed DataFrame.
+
+    Raises:
+        SystemExit: Raised when there is no data to process.
+
+    """
     if not data:
         print("No leads to process. Exiting program")
         sys.exit()
@@ -55,18 +79,43 @@ def fetch_data(
     from_file: bool,
     save_file: bool,
 ) -> list[dict[str, Any]]:
-    """Fetch data from MyLead API or a file."""
+    """
+    Fetch data from MyLead API or a file.
+
+    Args:
+        progress (Progress): The progress object for displaying progress information.
+        apikey (str): The API key for accessing the MyLead API.
+        date_from (datetime): The start date for fetching data.
+        date_to (datetime): The end date for fetching data.
+        from_file (bool): Flag indicating whether to fetch data from a file.
+        save_file (bool): Flag indicating whether to save fetched data to a file.
+
+    Returns:
+        list[dict[str, Any]]: The fetched data as a list of dictionaries.
+
+    Examples:
+        ```python
+        progress = Progress()
+        apikey = "API_KEY"
+        date_from = datetime(2022, 1, 1)
+        date_to = datetime(2022, 1, 31)
+        from_file = False
+        save_file = False
+
+        result = fetch_data(progress, apikey, date_from, date_to, from_file, save_file)
+        print(result)
+        ```"""
     start_time = perf_counter()
     if not from_file:
         progress.add_task(description="Fetching data from MyLead API...", total=None)
         api = models.Api(token=apikey, date_from=date_from, date_to=date_to, limit=500)
         all_data = asyncio.run(ml.fetch_all_pages_ml(api_data=api))
         if save_file:
-            utils.data_to_file("myfile.json", all_data)
+            utils.data_to_file("mlcli_leads_data.json", all_data)
     else:
         # TODO: fetch from specified file
         progress.add_task(description="Fetching data from file...", total=None)
-        all_data = utils.data_from_file("myfile.json")
+        all_data = utils.data_from_file("mlcli_leads_data.json")
     end_time = perf_counter()
     print(f"Fetched {len(all_data)} leads in {end_time-start_time:.2f} seconds.")
     return all_data
@@ -104,7 +153,8 @@ def stats(
     from_file: Annotated[bool, typer.Option(help="Load leads from file")] = False,
     charts: Annotated[bool, typer.Option(help="Show charts instead of tables")] = False,
 ) -> None:
-    """Shows statistics for data retrieved from the MyLead API.
+    """
+    Shows statistics for data retrieved from the MyLead API.
 
     You can specify date ranges using the --date-from and --date-to options.
     An API key (API_KEY) is REQUIRED and can be provided via an environment variable or command.
@@ -114,7 +164,18 @@ def stats(
     If the --save-file option is used, fetched data is saved as a JSON file.
     Alternatively, you can use --from-file to load data from a previously saved file.
 
-    Please note that due to API rate limiting, the maximum capacity is 10,000 leads per 60 seconds.
+    Due to API rate limiting the maximum fetching speed is 10,000 leads per 60 seconds.
+
+    Args:
+        date_from (datetime): Start date for gathering data. Default: 365 days ago.
+        date_to (datetime): End date for gathering data. Default: today.
+        apikey (str): Your API key from https://mylead.global/panel/api.
+        save_file (bool): Save leads to file.
+        from_file (bool): Load leads from file.
+        charts (bool): Show charts instead of tables.
+
+    Returns:
+        None
     """
     check_api_key(apikey)
     with Progress(

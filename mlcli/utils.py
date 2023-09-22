@@ -14,14 +14,23 @@ DataList = list[dict[str, Any]]
 
 
 def validate_data(data: DataList) -> DataList:
+    """
+    Validates the data in the provided list and returns a list of valid data.
+
+    Args:
+        data (DataList): The list of data to validate.
+
+    Returns:
+        DataList: The list of valid data.
+
+    Raises:
+        ValidationError: Raised when validation fails for any item in the data list."""
     valid_data = []
     for item in data:
         try:
             valid_data.append(models.Lead(**item).model_dump())
         except ValidationError as e:
-            print(f"Error: {e.errors()}")
-            print(e)
-            raise
+            raise e
     return valid_data
 
 
@@ -43,6 +52,15 @@ def data_from_file(file_name: str) -> DataList:
 
 
 def get_dataframe(data: DataList) -> pd.DataFrame:
+    """
+    Returns a pandas DataFrame from the validated data.
+
+    Args:
+        data (list[dict[str, Any]]): The list of data to convert to a DataFrame.
+
+    Returns:
+        pd.DataFrame: The DataFrame containing the normalized data.
+    """
     validated_data = validate_data(data)
     return pd.json_normalize(validated_data)
 
@@ -54,7 +72,7 @@ def one_year_ago_day() -> str:
 def generate_caption(df: pd.DataFrame) -> str:
     start_date = df["created_at.date"].min().date()
     end_date = df["created_at.date"].max().date()
-    num_of_leads = len(df)
+    num_of_leads = df.shape[0]
     return f"Data gathered between {start_date} and {end_date} from {num_of_leads} leads"
 
 

@@ -18,6 +18,20 @@ def create_bar_chart(
     caption: str,
     invert_colors: bool = False,
 ) -> None:
+    """
+    Creates a bar chart based on the provided DataFrame.
+
+    Args:
+        df (pd.DataFrame): The DataFrame containing the data.
+        group_by_column (str): The column to group the data by.
+        title (str): The title of the chart.
+        x_label (str): The label for the x-axis.
+        y_label (str): The label for the y-axis.
+        caption (str): The caption for the chart.
+        invert_colors (bool, optional): Whether to invert chart. Defaults to False.
+
+    Returns:
+        None"""
     fig = px.bar(
         df,
         x=group_by_column,
@@ -68,6 +82,20 @@ def barchart_from_data(
     sort_by: str = "total_payout",
     invert_colors: bool = False,
 ) -> None:
+    """
+    Intermediate function for creating chart from dataframe.
+
+    Args:
+        df (pd.DataFrame): The DataFrame containing the data.
+        group_by_column (str): The column to group the data by.
+        title (str): The title of the chart.
+        x_label (str): The label for the x-axis.
+        y_label (str): The label for the y-axis.
+        sort_by (str, optional): The column to sort the data by. Defaults to "total_payout".
+        invert_colors (bool, optional): Whether to invert the chart. Defaults to False.
+
+    Returns:
+        None"""
     caption = generate_caption(df)
     aggregated_data = tables.aggregate_data(
         data=df,
@@ -87,6 +115,15 @@ def barchart_from_data(
 
 
 def print_options(console: Console, options: dict[str, dict]) -> None:
+    """
+    Prints the available chart options to the console.
+
+    Args:
+        console (Console): The console object used for printing.
+        options (dict[str, dict]): The dictionary of chart options.
+
+    Returns:
+        None"""
     console.print(
         Panel(
             "\n".join([f"{key}. {value['title']}" for key, value in options.items()])
@@ -100,48 +137,57 @@ def print_options(console: Console, options: dict[str, dict]) -> None:
 
 
 def choose_graph(df: pd.DataFrame) -> None:
+    """
+    Choose a graph to display based on the provided DataFrame.
+
+    Args:
+        df (pd.DataFrame): The DataFrame containing the data.
+
+    Returns:
+        None
+    """
     console = Console()
     OPTIONS = {
         "1": {
-            "title": "Type of device on which leads were created",
-            "group_by_column": "user_agent.device",
+            "title": "Device Types",
+            "group_by_column": "Device Type",
             "x_label": "Device Type",
-            "y_label": "Leads Value",
+            "y_label": "Number of Leads",
             "invert_colors": False,
         },
         "2": {
-            "title": "Operating system on which leads were created",
-            "group_by_column": "user_agent.operation_system",
+            "title": "Operating Systems",
+            "group_by_column": "Operating System",
             "x_label": "Operating System",
-            "y_label": "Leads Value",
+            "y_label": "Number of Leads",
             "invert_colors": False,
         },
         "3": {
-            "title": "Country statistics",
-            "group_by_column": "country",
-            "x_label": "Country code",
-            "y_label": "Leads Value",
+            "title": "Country Statistics",
+            "group_by_column": "Country Code",
+            "x_label": "Country Code",
+            "y_label": "Number of Leads",
             "invert_colors": False,
         },
         "4": {
-            "title": "Campaigns chart",
-            "group_by_column": "campaign_name",
-            "x_label": "Campaign name",
-            "y_label": "Leads Value",
+            "title": "Campaigns",
+            "group_by_column": "Campaign Name",
+            "x_label": "Campaign Name",
+            "y_label": "Number of Leads",
             "invert_colors": False,
         },
         "5": {
-            "title": "Hour of day lead was approved",
-            "group_by_column": "hour_of_day",
+            "title": "Hourly Lead Approvals",
+            "group_by_column": "Hour",
             "x_label": "Hour",
-            "y_label": "Leads Value",
+            "y_label": "Number of Leads",
             "invert_colors": True,
         },
         "6": {
-            "title": "Hour of day lead was approved",
-            "group_by_column": "day_of_week",
-            "x_label": "Day of the week",
-            "y_label": "Leads Value",
+            "title": "Day of Week Lead Approvals",
+            "group_by_column": "Day of the Week",
+            "x_label": "Day of the Week",
+            "y_label": "Number of Leads",
             "invert_colors": False,
         },
     }
