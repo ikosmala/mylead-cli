@@ -1,6 +1,6 @@
 from datetime import date, datetime, timedelta
 
-from mlcli.models import Api
+from myleadcli.models import Api
 
 
 def test_strip_date_to():

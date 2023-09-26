@@ -1,7 +1,7 @@
 from faker import Faker
 import random
 import orjson
-from mlcli.utils import benchmark
+from myleadcli.utils import benchmark
 
 
 @benchmark

@@ -1,4 +1,4 @@
-# mlcli - CLI tool for MyLead API
+# myleadcli - CLI tool for MyLead API
 
 This package provides a command-line tool for generating statistics and charts from the MyLead API. With it, you can easily retrieve data from the API, store it in a Pandas DataFrame, save it to a file, create a user-friendly CLI interface using Typer, and visualize the data using Plotly.
 
@@ -26,7 +26,7 @@ The API rate limit acts as a bottleneck. Fortunately, in a typical scenario wher
 Install with pip
 
 ```bash
-  pip install mlcli
+  pip install myleadcli
 ```
 
 ## Environment Variables
@@ -44,19 +44,19 @@ API_KEY=YOUR_API_KEY_FROM_MYLEAD_DASHBOARD
 To fetch and present data in tables for leads from last 365 days use:
 
 ```bash
-mlcli YOUR_API_KEY
+myleadcli YOUR_API_KEY
 ```
 
 For charts
 
 ```bash
-mlcli YOUR_API_KEY --charts
+myleadcli YOUR_API_KEY --charts
 ```
 
 For more information use:
 
 ```bash
-mlcli --help
+myleadcli --help
 ```
 
 ## Features

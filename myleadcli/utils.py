@@ -8,7 +8,7 @@ import orjson
 import pandas as pd
 from pydantic import ValidationError
 
-from mlcli import models
+from myleadcli import models
 
 DataList = list[dict[str, Any]]
 

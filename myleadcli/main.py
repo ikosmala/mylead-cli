@@ -11,9 +11,9 @@ from dotenv import load_dotenv
 from rich import print
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
-from mlcli import ml, models, utils
-from mlcli.plotting import choose_graph
-from mlcli.tables import choose_table
+from myleadcli import ml, models, utils
+from myleadcli.plotting import choose_graph
+from myleadcli.tables import choose_table
 
 DATE_FORMATS = ["%Y-%m-%d", "%Y/%m/%d", "%d-%m-%Y", "%d/%m/%Y", "%Y.%m.%d", "%d.%m.%Y"]
 
@@ -130,11 +130,11 @@ def fetch_data(
         api = models.Api(token=apikey, date_from=date_from, date_to=date_to, limit=500)
         all_data = asyncio.run(ml.fetch_all_pages_ml(api_data=api))
         if save_file:
-            utils.data_to_file("mlcli_leads_data.json", all_data)
+            utils.data_to_file("myleadcli_leads_data.json", all_data)
     else:
         # TODO: fetch from specified file
         progress.add_task(description="Fetching data from file...", total=None)
-        all_data = utils.data_from_file("mlcli_leads_data.json")
+        all_data = utils.data_from_file("myleadcli_leads_data.json")
     end_time = perf_counter()
     print(f"Fetched {len(all_data)} leads in {end_time-start_time:.2f} seconds.")
     return all_data
@@ -215,7 +215,3 @@ def stats(
         choose_graph(df)
     else:
         choose_table(df)
-
-
-if __name__ == "__main__":
-    app()

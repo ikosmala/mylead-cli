@@ -5,8 +5,8 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
 
-from mlcli import tables
-from mlcli.utils import generate_caption
+from myleadcli import tables
+from myleadcli.utils import generate_caption
 
 
 def create_bar_chart(

@@ -11,7 +11,7 @@ from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
 from datetime import date, timedelta
-from mlcli.utils import generate_caption
+from myleadcli.utils import generate_caption
 
 
 def aggregate_data(

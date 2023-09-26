@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from unittest.mock import patch
 from pydantic import ValidationError
-from mlcli import utils
+from myleadcli import utils
 import pytest
 from pytest_mock import MockerFixture
 import pandas as pd
@@ -15,7 +15,7 @@ def tmp_file_with_data(tmp_path, data_for_validation):
 
 
 def test_one_year_ago_day():
-    with patch("mlcli.utils.datetime") as mock_date:
+    with patch("myleadcli.utils.datetime") as mock_date:
         mock_date.now.return_value = datetime(2023, 9, 17)
         mock_date.timedelta = timedelta
 

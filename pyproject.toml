@@ -1,22 +1,17 @@
 [tool.poetry]
-name = "mlcli"
+name = "myleadcli"
 version = "0.1.0"
 description = ""
 authors = ["Iwo <kosmala.iwo@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "" #can be the repo
-repository = ""
+homepage = "https://github.com/ikosmala/mylead-cli" 
+repository = "https://github.com/ikosmala/mylead-cli"
 keywords = ["test", "dependencies", "documentation"]
-classifiers = [
-"Development Status :: 5 — Production/Stable",
-"Intended Audience :: Education",
-"License :: OSI Approved :: MIT License",
-"Programming Language :: Python :: 3",
-]
+
 
 [tool.poetry.scripts]
-mlcli = "mlcli.main:app"
+myleadcli = "myleadcli.main:app"
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -69,11 +64,11 @@ target-version = "py311"
 show-fixes= true
 
 [tool.coverage.paths]
-source = ["mlcli", "*/site-packages"]
+source = ["myleadcli", "*/site-packages"]
 
 [tool.coverage.run]
 branch = true
-source = ["mlcli"]
+source = ["myleadcli"]
 
 [tool.coverage.report]
 show_missing = true

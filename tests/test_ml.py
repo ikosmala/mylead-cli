@@ -3,7 +3,7 @@ import logging
 import httpx
 import pytest
 from pytest_httpx import HTTPXMock
-from mlcli.ml import (
+from myleadcli.ml import (
     fetch_single_page,
     models,
     StatusError,
