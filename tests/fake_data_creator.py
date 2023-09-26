@@ -30,9 +30,9 @@ def generate_fake_data(num_entries: int) -> None:
             "campaign_id": random.randint(1, 100),
             "campaign_name": fake.sentence(),
             "payout": round(random.uniform(10, 50), 2),
-            "currency": fake.currency_code(),
+            "currency": "PLN",
             "status": random.choice(["pre_approved", "rejected", "pending", "approved"]),
-            "status_reason": fake.sentence(),
+            "status_reason": "some reason",
             "country": fake.country_code(representation="alpha-2"),
             "created_at": {
                 "date": fake.date_time_this_decade(tzinfo=None).isoformat(),
@@ -64,4 +64,4 @@ def generate_fake_data(num_entries: int) -> None:
 
 
 if __name__ == "__main__":
-    generate_fake_data(1_000_000)
+    generate_fake_data(100_000)

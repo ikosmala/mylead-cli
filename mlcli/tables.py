@@ -10,7 +10,7 @@ from rich.padding import Padding
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
-
+from datetime import date, timedelta
 from mlcli.utils import generate_caption
 
 
@@ -203,3 +203,18 @@ def choose_table(df: pd.DataFrame) -> None:
             table_from_data(df, **option)
         else:
             console.print("Wrong input")
+
+
+def rolling_window(df: pd.DataFrame) -> None:
+    print(df.dtypes)
+    result = aggregate_data(df, group_by_column="date")
+    result.set_index("date", inplace=True)
+    result.sort_index(inplace=True)
+    rolling = result["total_payout"].rolling(window="7D").sum()
+    rolling_sorted = rolling.sort_values(ascending=False)
+    best_window_end = rolling.idxmax()
+    best_window_start = pd.to_datetime(best_window_end) - pd.DateOffset(days=6)
+
+    print("Start Date of Best Rolling Window:", best_window_start)
+    print("End Date of Best Rolling Window:", best_window_end)
+    print(rolling_sorted.head(5))

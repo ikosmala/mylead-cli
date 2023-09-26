@@ -68,6 +68,25 @@ def process_data(data: list[dict[str, Any]]) -> pd.DataFrame:
     df = utils.get_dataframe(data)
     df["hour_of_day"] = df["created_at.date"].dt.hour.astype(int)
     df["day_of_week"] = df["created_at.date"].dt.day_name()
+    df["date"] = pd.to_datetime(df["created_at.date"].dt.date)
+    columns_to_categorical = [
+        "campaign_id",
+        "campaign_name",
+        "currency",
+        "status",
+        "status_reason",
+        "country",
+        "created_at.timezone_type",
+        "created_at.timezone",
+        "user_agent.operation_system",
+        "user_agent.operation_system_version",
+        "user_agent.browser_system",
+        "user_agent.device",
+        "user_agent.device_brand",
+        "user_agent.device_model",
+        "day_of_week",
+    ]
+    df = utils.convert_to_categorical(columns_to_categorical, df)
     return df
 
 
@@ -191,7 +210,7 @@ def stats(
             from_file,
             save_file,
         )
-        df = process_data(all_data)
+    df = process_data(all_data)
     if charts:
         choose_graph(df)
     else:

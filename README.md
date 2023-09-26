@@ -64,5 +64,6 @@ mlcli --help
 - [x] Charts for data not available in MyLead dashboard
 - [x] Presenting data in tables
 - [x] Async support for best performance
+- [x] Utilize categorical data types in Pandas to achieve improved memory usage (resulting in a 45% reduction with real data)
 - [ ] Mean/Max/Min/Avg statistics
 - [ ] More flexibility with file saving/reading

@@ -62,7 +62,24 @@ def get_dataframe(data: DataList) -> pd.DataFrame:
         pd.DataFrame: The DataFrame containing the normalized data.
     """
     validated_data = validate_data(data)
+
     return pd.json_normalize(validated_data)
+
+
+def convert_to_categorical(columns: list[str], df_to_convert: pd.DataFrame) -> pd.DataFrame:
+    """Converts all specified columns of a dataframe to categorical types."""
+    df_out = df_to_convert.copy()
+    for column in columns:
+        df_out[column] = df_out[column].astype("category")
+    return df_out
+
+
+def convert_to_string(columns: list[str], df_to_convert: pd.DataFrame) -> pd.DataFrame:
+    """Converts all specified columns of a dataframe to string types."""
+    df_out = df_to_convert.copy()
+    for column in columns:
+        df_out[column] = df_out[column].astype("category")
+    return df_out
 
 
 def one_year_ago_day() -> str:
