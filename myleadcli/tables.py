@@ -10,7 +10,6 @@ from rich.padding import Padding
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
-from datetime import date, timedelta
 from myleadcli.utils import generate_caption
 
 

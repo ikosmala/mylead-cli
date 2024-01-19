@@ -35,6 +35,15 @@ def validate_data(data: DataList) -> DataList:
 
 
 def data_to_file(file_name: str, data: DataList) -> None:
+    """Save validated data to a binary file.
+
+    Args:
+        file_name (str): The name of the file to save the data.
+        data (List): The list of data to be saved.
+
+    Returns:
+        None
+    """
     valid_data = validate_data(data)
     with open(file_name, "wb") as f:
         content = orjson.dumps(valid_data, option=orjson.OPT_INDENT_2)
@@ -74,19 +83,20 @@ def convert_to_categorical(columns: list[str], df_to_convert: pd.DataFrame) -> p
     return df_out
 
 
-def convert_to_string(columns: list[str], df_to_convert: pd.DataFrame) -> pd.DataFrame:
-    """Converts all specified columns of a dataframe to string types."""
-    df_out = df_to_convert.copy()
-    for column in columns:
-        df_out[column] = df_out[column].astype("category")
-    return df_out
-
-
 def one_year_ago_day() -> str:
+    "Return string with a date from one year ago."
     return str((datetime.now() - timedelta(days=365)).date())
 
 
 def generate_caption(df: pd.DataFrame) -> str:
+    """Generate a caption based on DataFrame statistics.
+
+    Args:
+        df (pd.DataFrame): The DataFrame containing data.
+
+    Returns:
+        str: The generated caption.
+    """
     start_date = df["created_at.date"].min().date()
     end_date = df["created_at.date"].max().date()
     num_of_leads = df.shape[0]
@@ -94,11 +104,14 @@ def generate_caption(df: pd.DataFrame) -> str:
 
 
 def benchmark(func: Callable[..., Any]) -> Callable[..., Any]:
+    """Decorator to benchmark the execution time of a function."""
+
     def wrapper(*args: Any, **kwargs: Any) -> Any:
+        """Wrapper function that calculates and logs the execution time."""
         start_time = time.perf_counter()
         value = func(*args, **kwargs)
         end_time = time.perf_counter()
-        print(
+        logging.info(
             f"The execution of {func.__name__} took {end_time - start_time:.5f} seconds",
         )
         return value

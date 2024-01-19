@@ -5,6 +5,15 @@ from myleadcli import utils
 import pytest
 from pytest_mock import MockerFixture
 import pandas as pd
+from pandas.api.types import CategoricalDtype
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+
+@pytest.fixture(autouse=True)
+def setup_logging(caplog):
+    caplog.set_level(logging.INFO)
 
 
 @pytest.fixture()
@@ -65,3 +74,23 @@ def test_generate_caption(dataframe_data):
     caption = utils.generate_caption(dataframe_data)
     num_of_leads = len(dataframe_data)
     assert f"{num_of_leads} leads" in caption
+
+
+def test_convert_to_categorical(dataframe_data):
+    columns_to_categorical = ["campaign_id", "campaign_name", "currency"]
+    categorical = utils.convert_to_categorical(columns_to_categorical, dataframe_data)
+    assert isinstance(categorical, pd.DataFrame)
+
+    for column in columns_to_categorical:
+        assert isinstance(categorical[column].dtype, CategoricalDtype)
+
+
+def test_benchmark_decorator(caplog):
+    @utils.benchmark
+    def sample_function():
+        x = 1
+
+    sample_function()
+    log_records = caplog.records
+    assert len(log_records) == 1
+    assert "The execution of sample_function took" in log_records[0].message
