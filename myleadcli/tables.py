@@ -32,7 +32,7 @@ def aggregate_data(
     selected_columns = [group_by_column, "payout"]
     df = data[selected_columns]
     return (
-        df.groupby(group_by_column)
+        df.groupby(group_by_column, observed=False)
         .agg(
             grouped_data=pd.NamedAgg(column=group_by_column, aggfunc="size"),
             total_payout=pd.NamedAgg(column="payout", aggfunc="sum"),

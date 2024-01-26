@@ -114,7 +114,7 @@ async def fetch_single_page(
 
 async def fetch_all_pages_ml(api_data: models.Api) -> list[dict[str, Any]]:
     """
-    Fetches all pages of data from the ML API.
+    Fetches all pages of data from the ML API asy.
 
     Args:
         api_data (models.Api): The API request data.

@@ -26,11 +26,10 @@ def validate_data(data: DataList) -> DataList:
     Raises:
         ValidationError: Raised when validation fails for any item in the data list."""
     valid_data = []
-    for item in data:
-        try:
-            valid_data.append(models.Lead(**item).model_dump())
-        except ValidationError as e:
-            raise e
+    try:
+        valid_data = [models.Lead.model_validate(item).model_dump() for item in data]
+    except ValidationError as e:
+        raise e
     return valid_data
 
 
